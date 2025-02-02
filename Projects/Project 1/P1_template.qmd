@@ -49,50 +49,217 @@ df = pd.read_csv("https://github.com/byuidatascience/data4names/raw/master/data-
 
 __How does your name at your birth year compare to its use historically?__
 
-_type your results and analysis here_
+_The name *Thomas* or *Tomas* in 1996 when I was born remained in use but had likely declined from 
+its peak popularity in earlier decades. _
 
 ```{python}
-# Include and execute your code here
+import pandas as pd
+import matplotlib.pyplot as plt
 
+# Load the CSV file to check its structure
+file_path = 'C:/Users/tomas/OneDrive/BYU- Idaho/DS250-homework/Other files/names_year.csv'
+#https://raw.githubusercontent.com/byuidatascience/data4names/master/data-raw/names_year/names_year.csv
+data = pd.read_csv(file_path)
+
+# Display the first few rows of the dataset to understand its structure
+data.head()
+# Filter data for the name 'Thomas'
+thomas_data = data[data['name'] == 'Thomas']
+
+# Extract historical data and 1996 usage
+thomas_historical = thomas_data.groupby('year')['Total'].sum()
+thomas_1996 = thomas_data[thomas_data['year'] == 1996]['Total'].sum()
+
+# Plot the data
+plt.figure(figsize=(12, 6))
+plt.plot(thomas_historical.index, thomas_historical.values, label='Historical Usage', color='blue')
+plt.axvline(x=1996, color='red', linestyle='--', label=f'1996 Usage: {thomas_1996:.0f}')
+
+# Adding labels and title
+plt.title("Usage of the Name 'Thomas' Over Time", fontsize=16)
+plt.xlabel("Year", fontsize=12)
+plt.ylabel("Total Count", fontsize=12)
+plt.legend(fontsize=10)
+plt.grid(alpha=0.5)
+
+# Show the chart
+plt.tight_layout()
+plt.show()
 
 ```
-
 
 ## QUESTION|TASK 2
 
 __If you talked to someone named Brittany on the phone, what is your guess of his or her age? What ages would you not guess?__
 
-_type your results and analysis here_
+_If I talked with someone named Brittany on the phone, I would guess that they were around 30-40 years old. 
+I would not guess that they were younger or older than that._
 
 ```{python}
-# Include and execute your code here
+import pandas as pd
+import matplotlib.pyplot as plt
 
+# Load and process the data
+#file_path = 'C:/Users/tomas/OneDrive/BYU- Idaho/DS250-homework/Other files/names_year.csv'
+data = pd.read_csv('https://raw.githubusercontent.com/byuidatascience/data4names/master/data-raw/names_year/names_year.csv')
+
+# Filter for Brittany and analyze
+brittany_data = data[data['name'] == 'Brittany']
+brittany_by_year = brittany_data.groupby('year')['Total'].sum()
+
+# Create the visualization
+plt.figure(figsize=(12, 6))
+plt.plot(brittany_by_year.index, brittany_by_year.values, color='purple', linewidth=2)
+
+# Add labels and styling
+plt.title("Popularity of the Name 'Brittany' Over Time", fontsize=14, pad=15)
+plt.xlabel("Year", fontsize=12)
+plt.ylabel("Number of Babies Named Brittany", fontsize=12)
+plt.grid(True, alpha=0.3)
+
+# Find peak year and value
+peak_year = brittany_by_year.idxmax()
+peak_value = brittany_by_year.max()
+
+# Annotate peak
+plt.annotate(f'Peak year: {peak_year}\n({peak_value:,.0f} babies)',
+             xy=(peak_year, peak_value),
+             xytext=(5, 5),
+             textcoords='offset points',
+             fontsize=10)
+
+plt.tight_layout()
+plt.show()
+
+# Print peak year
+print(f"Peak popularity year: {peak_year}")
 
 ```
+
+
 
 
 ## QUESTION|TASK 3
 
 __Mary, Martha, Peter, and Paul are all Christian names. From 1920 - 2000, compare the name usage of each of the four names in a single chart. What trends do you notice?__
 
-_type your results and analysis here_
+_From 1920 to 2000, *Mary* was the most popular name, peaking mid-century before sharply declining. 
+*Martha* stayed consistently lower in popularity. *Paul* and *Peter* were both commonly used,
+ with *Paul* peaking earlier and then declining, while *Peter* remained steadier.
+ Overall, all four names showed a decline in usage over time._
 
 ```{python}
-# Include and execute your code here
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the CSV file
+file_path = 'C:/Users/tomas/OneDrive/BYU- Idaho/DS250-homework/Other files/names_year.csv'
+#https://raw.githubusercontent.com/byuidatascience/data4names/master/data-raw/names_year/names_year.csv
+data = pd.read_csv(file_path)
+
+# Create a list of names to analyze
+names_to_analyze = ['Mary', 'Martha', 'Peter', 'Paul']
+
+# Create figure with larger size for better readability
+plt.figure(figsize=(15, 8))
+
+# Plot each name
+for name in names_to_analyze:
+    # Filter data for each name
+    name_data = data[data['name'] == name]
+    
+    # Group by year and sum the total usage
+    historical_usage = name_data.groupby('year')['Total'].sum()
+    
+    # Filter for years between 1920 and 2000
+    historical_usage = historical_usage[(historical_usage.index >= 1920) & (historical_usage.index <= 2000)]
+    
+    # Plot the data
+    plt.plot(historical_usage.index, historical_usage.values, label=name, linewidth=2)
+
+# Customize the plot
+plt.title("Usage of the names Mary, Martha, Peter, and Paul (1920-2000)", fontsize=16, pad=20)
+plt.xlabel("Year", fontsize=12)
+plt.ylabel("Total Count", fontsize=12)
+plt.legend(fontsize=12)
+plt.grid(True, alpha=0.3)
+
+# Add thousand separator to y-axis
+plt.gca().yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: format(int(x), ',')))
+
+# Rotate x-axis labels for better readability
+plt.xticks(rotation=45)
+
+# Adjust layout to prevent label cutoff
+plt.tight_layout()
+
+# Show the plot
+plt.show()
+
 
 ```
-
 
 
 ## QUESTION|TASK 4
 
 __Think of a unique name from a famous movie. Plot the usage of that name and see how changes line up with the movie release. Does it look like the movie had an effect on usage?__  
 
-_type your results and analysis here_
+_We can see that the name Diego increased in popularity after Argentina won the world cup in 1986 in a very significant way.\
+Even peaking in the early 2000s, and then took a hit when Messi took over in popularity. _
 
 ```{python}
-# Include and execute your code here
 
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the CSV file
+file_path = 'C:/Users/tomas/OneDrive/BYU- Idaho/DS250-homework/Other files/names_year.csv'
+#https://raw.githubusercontent.com/byuidatascience/data4names/master/data-raw/names_year/names_year.csv
+data = pd.read_csv(file_path)
+
+# Filter data for the name 'Harry'
+diego_data = data[data['name'] == 'Diego']
+
+# Group by year to calculate the total usage nationwide for each year
+diego_historical = diego_data.groupby('year')['Total'].sum()
+
+# Create the plot with a larger size
+plt.figure(figsize=(15, 8))
+
+# Plot the data
+plt.plot(diego_historical.index, diego_historical.values, label="Diego", color="purple", linewidth=2)
+
+# Add a vertical line for 1986
+plt.axvline(x=1986, color='red', linestyle='--', alpha=0.5, label='1986')
+
+# Calculate and show the percent change 
+if 1986 in diego_historical.index and 1986 in diego_historical.index:
+    change_1986_2010 = ((diego_historical[1986] - diego_historical[1986]) / diego_historical[1986] * 100)
+    plt.annotate(f'Change 1986-2009: {change_1986_2010:.1f}%', 
+                xy=(1986, diego_historical[2010]),
+                xytext=(10, 30),
+                textcoords='offset points',
+                bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5))
+
+# Customize the plot
+plt.title("Usage of the Name 'Diego' Over Time\nWith 1986 Reference Line\n after Argentina won the world cup", fontsize=16, pad=20)
+plt.xlabel("Year", fontsize=12)
+plt.ylabel("Total Count", fontsize=12)
+plt.legend(fontsize=12)
+plt.grid(True, alpha=0.3)
+
+# Add thousand separator to y-axis
+plt.gca().yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: format(int(x), ',')))
+
+# Rotate x-axis labels for better readability
+plt.xticks(rotation=45)
+
+# Adjust layout to prevent label cutoff
+plt.tight_layout()
+
+# Show the plot
+plt.show()
 
 ```
 

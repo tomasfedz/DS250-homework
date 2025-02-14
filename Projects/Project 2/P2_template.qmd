@@ -229,6 +229,7 @@ GROUP BY teamID, yearID
 ORDER BY yearID, teamID;
 """
 df = pd.read_sql_query(query, con)
+print(df) 
 con.close()
 
 # Lets-Plot visualization

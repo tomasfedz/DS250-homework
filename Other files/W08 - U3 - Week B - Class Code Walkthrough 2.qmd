@@ -1,0 +1,158 @@
+## W08.2 - U3 (Week B) - Class Code
+
+```{=html}
+<iframe id="kaltura_player" src="https://cdnapisec.kaltura.com/p/1157612/sp/115761200/embedIframeJs/uiconf_id/41338032/partner_id/1157612?iframeembed=true&playerId=kaltura_player&entry_id=1_ci5yck2b&flashvars[localizationCode]=en&amp;flashvars[sideBarContainer.plugin]=true&amp;flashvars[sideBarContainer.position]=left&amp;flashvars[sideBarContainer.clickToClose]=true&amp;flashvars[chapters.plugin]=true&amp;flashvars[chapters.layout]=vertical&amp;flashvars[chapters.thumbnailRotator]=false&amp;flashvars[streamSelector.plugin]=true&amp;flashvars[EmbedPlayer.SpinnerTarget]=videoHolder&amp;flashvars[dualScreen.plugin]=true&amp;flashvars[Kaltura.addCrossoriginToIframe]=true&amp;&wid=1_jowf8u3x" width="608" height="402" allowfullscreen webkitallowfullscreen mozAllowFullScreen allow="autoplay *; fullscreen *; encrypted-media *" sandbox="allow-downloads allow-forms allow-same-origin allow-scripts allow-top-navigation allow-pointer-lock allow-popups allow-modals allow-orientation-lock allow-popups-to-escape-sandbox allow-presentation allow-top-navigation-by-user-activation" frameborder="0" title="W07"></iframe>
+```
+
+### A further in-depth look at the functions you will be learning in this unit. Below is the code used in the video so you can follow along.
+
+```{python}
+# %%
+import pandas as pd 
+import numpy as np
+import sqlite3
+```
+
+```{python}
+# %%
+# careful to list your path to the file. Or save this code in the same folder as the sqlite file.
+sqlite_file = 'lahmansbaseballdb.sqlite'
+con = sqlite3.connect(sqlite_file)
+```
+
+```{python}
+# %%
+# allstar table
+
+q = '''
+    SELECT *
+    FROM AllstarFull
+    WHERE yearid > 1999 
+        AND gp <> 1
+    LIMIT 5
+'''
+
+df = pd.read_sql_query(q,con)
+df
+```
+
+```{python}
+# %%
+# Can you use a groupby to get 
+# the counts of players per year?
+
+q = '''
+    SELECT yearid, 
+    COUNT(*) as num_players
+    FROM AllstarFull
+    WHERE yearid > 1999 
+        AND gp != 1
+    GROUP BY yearid
+    ORDER BY yearid
+    LIMIT 10
+'''
+
+df = pd.read_sql_query(q,con)
+df
+```
+
+```{python}
+# %%
+# join season game data and 
+# calculate the total atbats and hits for each player by year.
+q = '''
+SELECT b.playerID
+,      SUM(b.ab) AS 'Total AB'
+,      SUM(b.h) AS 'Total H'
+FROM AllstarFull AS af
+LEFT JOIN batting AS b
+ON b.playerID = af.playerID
+GROUP BY b.playerID
+HAVING Sum(b.ab)<219469
+ORDER BY Sum(b.ab)
+LIMIT 5
+'''
+
+df = pd.read_sql_query(q,con)
+df
+```
+```{python}
+
+# Join Season Game Data and calculate the total atbats and hits for each player by year
+
+q = '''
+SELECT g.playerID, g.yearID, b.AB, b.h, g.GP, g.gameID
+FROM AllStarFull AS g
+JOIN Batting AS b
+    ON g.playerID = b.playerID
+    AND g.yearID = b.yearID
+GROUP BY g.playerid, g.yearID
+LIMIT 10
+'''
+
+df = pd.read_sql_query(q, con)
+df
+
+
+```
+
+
+
+```{python}
+# %%
+# Can you join the batting table and AllStar 
+# information and keep only the at bats, 
+# hits with the all star gp and gameid columns?
+
+q = '''
+    SELECT -- bp.playerid, 
+        -- bp.yearid,
+        bp.ab, -- can we keep this
+        bp.h, -- can we keep this
+        asf.gp, 
+        asf.gameid
+    FROM BattingPost as bp
+    LEFT JOIN AllstarFull as asf
+        ON  bp.playerid = asf.playerid AND
+            bp.yearid = asf.yearid
+    WHERE bp.yearid > 1999
+        AND gp != 1
+        AND ab > 0
+    LIMIT 15
+
+    '''
+df = pd.read_sql_query(q,con)
+df
+```
+
+```{python}
+# %%
+# Let's build the final table
+
+# Which year had the most players selected as All Stars 
+# but didn't play in the All Star game after 1999?
+# provide a summary of how many games, hits, and at bats 
+# occured by those players had in that years post season.
+
+q = '''
+    SELECT bp.yearid, 
+        sum(bp.ab) as ab, 
+        sum(bp.h) as h,
+        sum(bp.g) as games, 
+        count(asf.playerID) as num_players,
+        asf.gp 
+        -- asf.gameid
+    FROM BattingPost as bp
+    JOIN AllstarFull as asf
+        ON  bp.playerid = asf.playerid AND
+            bp.yearid = asf.yearid
+    WHERE (asf.yearid > 1999
+        AND asf.gp != 1)
+        -- AND ab > 0
+    GROUP BY bp.yearid
+    ORDER BY bp.yearid
+    LIMIT 15
+    '''
+df = pd.read_sql_query(q,con)
+df
+```

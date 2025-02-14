@@ -1,0 +1,394 @@
+---
+title: "Client Report - Finding Relationships in Baseball"
+subtitle: "Course DS 250"
+author: "[Tomas Fernandez]"
+format:
+  html:
+    self-contained: true
+    page-layout: full
+    title-block-banner: true
+    toc: true
+    toc-depth: 3
+    toc-location: body
+    number-sections: false
+    html-math-method: katex
+    code-fold: true
+    code-summary: "Show the code"
+    code-overflow: wrap
+    code-copy: hover
+    code-tools:
+        source: false
+        toggle: true
+        caption: See code
+execute: 
+  warning: false
+    
+---
+
+```{python}
+
+```
+
+
+```{python}
+# Learn morea about Code Cells: https://quarto.org/docs/reference/cells/cells-jupyter.html
+
+# Include and execute your code here
+
+```
+
+## QUESTION|TASK 1
+
+__Write an SQL query to create a new dataframe about baseball players who attended BYU-Idaho. The new table should contain five columns: playerID, schoolID, salary, and the yearID/teamID associated with each salary. Order the table by salary (highest to lowest) and print out the table in your report.__  
+
+```{python}
+# Include and execute your code here
+
+import pandas as pd
+import sqlite3
+import os
+
+# file path
+sqlite_file = r'C:\\Users\\tomas\\Downloads\\lahmansbaseballdb.sqlite'
+# https://byuistats.github.io/DS250-Course/Data/readme2014.txt
+con = sqlite3.connect(sqlite_file)
+
+q = """
+--Here I created a new table called PlayerSchools that contains the playerID and schoolID for players who played for BYU-Idaho
+WITH PlayerSchools AS (
+    SELECT DISTINCT cp.playerID, s.schoolID
+    FROM CollegePlaying cp
+    JOIN Schools s ON cp.schoolID = s.schoolID
+    WHERE s.name_full = 'Brigham Young University-Idaho'
+)
+--Here I joined the PlayerSchools table with the Salaries table to get the playerID, schoolID, salary, yearID, and teamID
+SELECT DISTINCT  -- Added DISTINCT to remove duplicates
+    ps.playerID,
+    ps.schoolID,
+    sa.salary,
+    sa.yearID,
+    sa.teamID
+FROM PlayerSchools ps
+--I joined the PlayerSchools table with the Salaries table
+JOIN Salaries sa ON ps.playerID = sa.playerID
+ORDER BY sa.salary DESC;
+"""
+df = pd.read_sql_query(q, con)
+print(df)
+
+
+
+
+
+
+```
+
+
+## QUESTION|TASK 2
+
+__This three-part question requires you to calculate batting average (number of hits divided by the number of at-bats)__  
+    a. Write an SQL query that provides playerID, yearID, and batting average for players with at least 1 at bat that year. Sort the table from highest batting average to lowest, and then by playerid alphabetically. Show the top 5 results in your report.  
+    a. Use the same query as above, but only include players with at least 10 at bats that year. Print the top 5 results.  
+    a. Now calculate the batting average for players over their entire careers (all years combined). Only include players with at least 100 at bats, and print the top 5 results.  
+
+
+
+A. Top 5 players with the highest batting average with at least 1 at bat
+```{python}
+# Include and execute your code here
+import pandas as pd
+import sqlite3
+import os
+
+# File path
+sqlite_file = r'C:\\Users\\tomas\\Downloads\\lahmansbaseballdb.sqlite'
+con = sqlite3.connect(sqlite_file)
+
+
+
+q = """
+SELECT playerID, 
+       yearID, 
+       --this calculates the batting average as total hits divided by total at bats
+       CAST(SUM(H) AS FLOAT) / SUM(AB) AS batting_avg
+FROM Batting
+--this filters the table to only include players with at least 1 at bat
+WHERE AB >= 1
+GROUP BY playerID, yearID
+ORDER BY batting_avg DESC, playerID
+LIMIT 5;
+
+
+"""
+df = pd.read_sql_query(q, con)
+print(df)
+
+
+
+```
+B. Top 5 players with the highest batting average with at least 10 at bats
+```{python}
+
+# Include and execute your code here
+import pandas as pd
+import sqlite3
+import os
+
+# File path
+sqlite_file = r'C:\\Users\\tomas\\Downloads\\lahmansbaseballdb.sqlite'
+con = sqlite3.connect(sqlite_file)
+
+
+
+q = """
+SELECT playerID, 
+       yearID, 
+       --this calculates the batting average as total hits divided by total at bats
+       CAST(SUM(H) AS FLOAT) / SUM(AB) AS batting_avg
+FROM Batting
+--this filters the table to only include players with at least 10 at bats
+WHERE AB >= 10
+GROUP BY playerID, yearID
+ORDER BY batting_avg DESC, playerID
+LIMIT 5;
+
+"""
+df = pd.read_sql_query(q, con)
+print(df)
+
+
+
+```
+C. Top 5 players with the highest career batting average, with at least 100 at bats
+```{python}
+# Include and execute your code here
+
+import pandas as pd
+import sqlite3
+import os
+
+# File path
+sqlite_file = r'C:\\Users\\tomas\\Downloads\\lahmansbaseballdb.sqlite'
+con = sqlite3.connect(sqlite_file)
+
+
+
+q = """
+SELECT playerID, 
+       CAST(SUM(H) AS FLOAT) / SUM(AB) AS career_batting_avg
+FROM Batting
+WHERE AB >= 100
+GROUP BY playerID
+ORDER BY career_batting_avg DESC, playerID
+LIMIT 5;
+
+
+"""
+df = pd.read_sql_query(q, con)
+print(df)
+
+
+
+
+
+
+```
+
+
+## QUESTION|TASK 3
+
+__Pick any two baseball teams and compare them using a metric of your choice (average salary, home runs, number of wins, etc). Write an SQL query to get the data you need, then make a graph using Lets-Plot to visualize the comparison. What do you learn?__
+
+
+
+```{python}
+# Include and execute your code here
+
+
+import pandas as pd
+import sqlite3
+import os
+from lets_plot import *
+LetsPlot.setup_html()
+
+
+# File path
+sqlite_file = r'C:\\Users\\tomas\\Downloads\\lahmansbaseballdb.sqlite'
+con = sqlite3.connect(sqlite_file)
+
+
+
+# Run the query
+query = """
+SELECT teamID, 
+       yearID, 
+       AVG(salary) AS avg_salary
+FROM Salaries
+WHERE teamID IN ('NYA', 'BOS')  -- Yankees vs. Red Sox
+GROUP BY teamID, yearID
+ORDER BY yearID, teamID;
+"""
+df = pd.read_sql_query(query, con)
+con.close()
+
+# Lets-Plot visualization
+plot = ggplot(df, aes(x="yearID", y="avg_salary", color="teamID")) + \
+    geom_line() + geom_point() + \
+    ggtitle("Average Salary Comparison: Yankees vs. Red Sox") + \
+    xlab("Year") + ylab("Average Salary (USD)")
+
+plot.show()
+
+
+```
+
+---
+
+## STRETCH QUESTION|TASK 1
+ 
+__Advanced Salary Distribution by Position (with Case Statement):__
+
+Write an SQL query that provides a summary table showing the average salary for each position (e.g., pitcher, catcher, outfielder). Position information can be found in the fielding table in the POS column. 
+    
+        Include the following columns:
+
+        * position
+        * average_salary
+        * total_players
+        * highest_salary  
+
+The highest_salary column should display the highest salary ever earned by a player in that position. 
+
+Additionally, create a new column called salary_category using a case statement:  
+
+        * If the average salary is above $3 million, categorize it as “High Salary.”
+        * If the average salary is between $2 million and $3 million, categorize it as “Medium Salary.”
+        * Otherwise, categorize it as “Low Salary.”  
+
+Order the table by average salary in descending order.
+
+Hint: Beware, it is common for a player to play multiple positions in a single year. For this analysis, each player’s salary should only be counted toward one position in a given year: the position at which they played the most games that year. This will likely require a (sub-query)[https://docs.data.world/documentation/sql/concepts/advanced/WITH.html].
+
+    
+
+```{python}
+# Include and execute your code here
+import pandas as pd
+import sqlite3
+import os
+
+# File path
+sqlite_file = r'C:\\Users\\tomas\\Downloads\\lahmansbaseballdb.sqlite'
+con = sqlite3.connect(sqlite_file)
+
+
+
+q1 = """
+-- created a table called PlayerPrimaryPosition that selects the primary position for each player in each year
+WITH PlayerPrimaryPosition AS (
+    SELECT playerID, 
+           yearID, 
+           POS, 
+           SUM(G) AS total_games,
+           -- rank positions by total games played
+           RANK() OVER (PARTITION BY playerID, yearID ORDER BY SUM(G) DESC) AS rank
+    FROM Fielding
+    GROUP BY playerID, yearID, POS
+),
+-- here I filter the table to only include the primary position for each player
+FilteredPlayers AS (
+    SELECT playerID, yearID, POS
+    FROM PlayerPrimaryPosition
+    WHERE rank = 1  -- Selecting the primary position (most games played)
+),
+-- created a table called PositionSalaries that selects the salary for each player in each year
+PositionSalaries AS (
+    SELECT f.POS, 
+           s.salary, 
+           s.playerID
+    FROM Salaries s
+    JOIN FilteredPlayers f 
+        ON s.playerID = f.playerID AND s.yearID = f.yearID
+)
+-- here I group the table by position and calculate the average salary, total players, and highest salary
+SELECT ps.POS AS position,
+       AVG(ps.salary) AS average_salary,
+       COUNT(DISTINCT ps.playerID) AS total_players,
+       MAX(ps.salary) AS highest_salary,
+       CASE 
+       -- using a case statement to categorize the average salary as instructed
+           WHEN AVG(ps.salary) > 3000000 THEN 'High Salary'
+           WHEN AVG(ps.salary) BETWEEN 2000000 AND 3000000 THEN 'Medium Salary'
+           ELSE 'Low Salary'
+       END AS salary_category
+FROM PositionSalaries ps
+GROUP BY ps.POS
+ORDER BY average_salary DESC;
+
+"""
+
+df = pd.read_sql_query(q1, con)
+print(df)
+
+```
+
+
+## STRETCH QUESTION|TASK 2
+
+__Advanced Career Longevity and Performance (with Subqueries):__
+
+Calculate the average career length (in years) for players who have played at least **10 games**. Then, identify the top 10 players with the longest careers (based on the number of years they played). Include their: 
+
+        * playerID
+        * first_name
+        * last_name
+        * career_length
+
+The career_length should be calculated as the difference between the maximum and minimum yearID for each player.  
+
+
+
+```{python}
+# Include and execute your code here
+
+import pandas as pd
+import sqlite3
+import os
+
+# File path
+sqlite_file = r'C:\\Users\\tomas\\Downloads\\lahmansbaseballdb.sqlite'
+con = sqlite3.connect(sqlite_file)
+
+
+
+q1 = """
+
+-- created a table called CareerLength that selects the playerID, start year, end year, and career length
+WITH CareerLength AS (
+    SELECT playerID, 
+           MIN(yearID) AS start_year, 
+           MAX(yearID) AS end_year,
+           -- career length is the difference between the maximum and minimum yearID
+           (MAX(yearID) - MIN(yearID)) AS career_length
+    FROM Appearances
+    GROUP BY playerID
+    -- here I filter the table to only include players who have played at least 10 games
+    HAVING SUM(G_all) >= 10  -- Using SUM(G_all) instead of COUNT(gameID)
+)
+SELECT p.nameFirst AS first_name, 
+       p.nameLast AS last_name, 
+       c.career_length
+FROM CareerLength c
+-- here I join the table to the People table
+JOIN People p ON c.playerID = p.playerID
+ORDER BY c.career_length DESC
+LIMIT 10;
+
+"""
+
+df = pd.read_sql_query(q1, con)
+print(df)
+```
+
+---
+

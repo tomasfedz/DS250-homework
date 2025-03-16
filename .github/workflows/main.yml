@@ -1,52 +1,39 @@
-name: Render Quarto Report and Deploy
-
+name: Render and Publish Quarto Project
 on:
+  workflow_dispatch:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    branches: main
 
 jobs:
-  render:
+  build-deploy:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Check out repository
+        uses: actions/checkout@v4
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          tinytex: true
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.10'
 
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pandas numpy matplotlib seaborn scikit-learn xgboost
+          # Adding additional packages specific to your project
+          pip install jupyter nbformat nbclient
 
-      - name: Render Quarto document
-        run: quarto render 'Projects/Project 4/project4.qmd'
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+      - name: Render and Publish
+        uses: quarto-dev/quarto-actions/publish@v2
         with:
+          target: gh-pages
           path: 'Projects/Project 4/'
-
-  deploy:
-    needs: render
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ github.pages.url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -30,10 +30,15 @@ jobs:
           # Adding additional packages specific to your project
           pip install jupyter nbformat nbclient
 
-      - name: Render and Publish
-        uses: quarto-dev/quarto-actions/publish@v2
+      # Try using direct quarto render command instead
+      - name: Render Quarto Project
+        run: |
+          cd "Projects/Project 4" || cd .
+          quarto render
+
+      # Manual deployment to gh-pages
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          target: gh-pages
-          path: 'Projects/Project 4/'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          folder: "Projects/Project 4/_site" # Adjust if your output directory is different
+          branch: gh-pages

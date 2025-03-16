@@ -1,8 +1,10 @@
 name: Render and Publish Quarto Document
+
 on:
   workflow_dispatch:
   push:
-    branches: main
+    branches:
+      - main
 
 jobs:
   build-deploy:
@@ -45,9 +47,9 @@ jobs:
           echo "Rendering $QMD_FILE"
           quarto render "$QMD_FILE" --to html
 
-      # Deploy the rendered HTML
+      # Deploy the rendered HTML to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: "."  # Will be refined based on output location
+          folder: "."  # This should be the folder where the HTML output is generated (e.g., ./docs or another path)
           branch: gh-pages

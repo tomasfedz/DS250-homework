@@ -1,4 +1,5 @@
 name: Render and Publish Quarto Project
+
 on:
   workflow_dispatch:
   push:
@@ -9,36 +10,40 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
+      # Step 1: Check out the repository
       - name: Check out repository
         uses: actions/checkout@v4
 
+      # Step 2: Set up Quarto
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
         with:
-          tinytex: true
+          version: 'latest'
 
+      # Step 3: Set up Python environment
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
+      # Step 4: Install Python dependencies
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pandas numpy matplotlib seaborn scikit-learn xgboost
-          # Adding additional packages specific to your project
-          pip install jupyter nbformat nbclient
+          pip install pandas numpy matplotlib seaborn scikit-learn xgboost jupyter nbformat nbclient
 
-      # Try using direct quarto render command instead
+      # Step 5: Render the Quarto project
       - name: Render Quarto Project
         run: |
-          cd "Projects/Project 4" || cd .
-          quarto render
+          cd "Projects/Project 4" || exit 1
+          quarto render --output-dir _site || (echo "Quarto render failed. Contents of directory:"; ls -R; exit 1)
 
-      # Manual deployment to gh-pages
+      # Step 6: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: "Projects/Project 4/_site" # Adjust if your output directory is different
           branch: gh-pages
+

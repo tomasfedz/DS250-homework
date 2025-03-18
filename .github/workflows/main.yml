@@ -52,5 +52,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: "."  # This should be the folder where the HTML output is generated (e.g., ./docs or another path)
-          branch: gh-pages
+          folder: "."  # This should be the folder where the HTML output is generated
+          branch: main  # Deploy to the 'main' branch

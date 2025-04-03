@@ -3131,7 +3131,7 @@ vertical-align: -.125em;
   <li><a href="#stretch-questiontask-3" id="toc-stretch-questiontask-3">STRETCH QUESTION|TASK 3</a></li>
   </ul>
 </nav>
-<div id="e7a6cbf2" class="cell" data-execution_count="1">
+<div id="c705812f" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd </span>
@@ -3147,7 +3147,7 @@ vertical-align: -.125em;
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>LetsPlot.setup_html(isolated_frame<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="2c57cbf3" class="cell" data-execution_count="2">
+<div id="0ae9ea2a" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Learn morea about Code Cells: https://quarto.org/docs/reference/cells/cells-jupyter.html</span></span>
@@ -3169,7 +3169,7 @@ vertical-align: -.125em;
 <h2 class="anchored" data-anchor-id="questiontask-1">QUESTION|TASK 1</h2>
 <p><strong>Shorten the column names and clean them up for easier use with pandas.</strong> Provide a table or list that exemplifies how you fixed the names.</p>
 <p><em>The original dataset’s column names were verbose and inconsistent, making them unwieldy for analysis. I shortened them, removed special characters, and standardized formatting for pandas compatibility. For example, “Have you seen any of the 6 films in the Star Wars franchise?” became seen_any_film, and character favorability columns like “Please state whether you view the following characters favorably…” were prefixed as favor_han_solo, etc.</em></p>
-<div id="125fd3d6" class="cell" data-execution_count="3">
+<div id="e8c7ef00" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Include and execute your code here</span></span>
@@ -3832,7 +3832,7 @@ e. Create your target (also known as “y” or “label”) column based on the
 f. One-hot encode all remaining categorical columns</p>
 <p><em>The dataset was filtered to include only respondents who have seen at least one Star Wars film. Age, education, and income were converted from categorical ranges to numeric values (e.g., “18-29” to 23.5, “Bachelor degree” to 4, “$50,000 - $99,999” to 4), and original columns were dropped. A binary target column was created where 1 indicates income &gt; $50k. Categorical columns like gender and shot_first were one-hot encoded for model compatibility.</em></p>
 <p>A. Filter the dataset to respondents that have seen at least one film: Completed</p>
-<div id="b518e151" class="cell" data-execution_count="4">
+<div id="a9a58c24" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Include and execute your code here</span></span>
@@ -3859,7 +3859,7 @@ f. One-hot encode all remaining categorical columns</p>
 </div>
 </div>
 <p>B. Create a new column that converts the age ranges to a single number</p>
-<div id="30d7c497" class="cell" data-execution_count="5">
+<div id="355c69fc" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># b. Create a new column that converts the age ranges to a single number</span></span>
@@ -3941,7 +3941,7 @@ f. One-hot encode all remaining categorical columns</p>
 </div>
 </div>
 <p>C. Create a new column that converts the education groupings to a single number</p>
-<div id="ec6e2092" class="cell" data-execution_count="6">
+<div id="956bb4ec" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># c. Create a new column that converts the education groupings to a single number</span></span>
@@ -4037,7 +4037,7 @@ f. One-hot encode all remaining categorical columns</p>
 </div>
 </div>
 <p>D. Create a new column that converts the income ranges to a single number</p>
-<div id="65bb2e8e" class="cell" data-execution_count="7">
+<div id="dd876c1c" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># d. Create a new column that converts the income ranges to a single number</span></span>
@@ -4136,7 +4136,7 @@ f. One-hot encode all remaining categorical columns</p>
 </div>
 </div>
 <p>E. Create target column (income &gt; $50k)</p>
-<div id="e29ae635" class="cell" data-execution_count="8">
+<div id="afcc8923" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Include and execute your code here</span></span>
@@ -4216,7 +4216,7 @@ f. One-hot encode all remaining categorical columns</p>
 </div>
 </div>
 <p>F. One-hot encode or convert categorical variables into a numerical format</p>
-<div id="994faecf" class="cell" data-execution_count="9">
+<div id="a4b85cef" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Include and execute your code here</span></span>
@@ -4862,7 +4862,7 @@ f. One-hot encode all remaining categorical columns</p>
 <h2 class="anchored" data-anchor-id="questiontask-3">QUESTION|TASK 3</h2>
 <p><strong>Validate that the data provided on GitHub lines up with the article by recreating 2 of the visuals from the article.</strong></p>
 <p><em>The FiveThirtyEight article includes visuals like the percentage of respondents who have seen each film and the favorability of characters. I recreated these using bar charts, confirming that Episode V is the most seen (around 64%) and The Empire Strikes Back was voted ‘best’ chapter around 24.4%, aligning with the article’s findings.</em></p>
-<div id="cad29db4" class="cell" data-execution_count="10">
+<div id="5a729cac" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Include and execute your code here</span></span>
@@ -4992,7 +4992,7 @@ f. One-hot encode all remaining categorical columns</p>
 <h2 class="anchored" data-anchor-id="stretch-questiontask-1">STRETCH QUESTION|TASK 1</h2>
 <p><strong>Build a machine learning model that predicts whether a person makes more than $50k. With accuracy of at least 65%. Describe your model and report the accuracy.</strong></p>
 <p><em>I built a Random Forest Classifier to predict whether a respondent earns over $50k based on features like age, education, and character favorability. The model achieved an accuracy of approximately 68%, exceeding the 65% threshold, with age and education being the most important predictors.</em></p>
-<div id="4f111642" class="cell" data-execution_count="11">
+<div id="2b88fbfe" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import necessary libraries</span></span>
@@ -5246,7 +5246,7 @@ Name: count, dtype: int64</code></pre>
 <h2 class="anchored" data-anchor-id="stretch-questiontask-2">STRETCH QUESTION|TASK 2</h2>
 <p><strong>Validate the data provided on GitHub lines up with the article by recreating a 3rd visual from the article.</strong></p>
 <p><em>The article shows how often each Star Wars film was rated in the top, middle, and bottom third by 471 respondents who have seen all six films. I recreated this as a horizontal grouped bar chart, confirming that “The Empire Strikes Back” is most often rated in the top third (64%), while “Attack of the Clones” is most often in the bottom third (57%), consistent with the article.</em></p>
-<div id="79125763" class="cell" data-execution_count="12">
+<div id="b481ee12" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Include and execute your code here</span></span>
@@ -5359,36 +5359,37 @@ Name: count, dtype: int64</code></pre>
 <h2 class="anchored" data-anchor-id="stretch-questiontask-3">STRETCH QUESTION|TASK 3</h2>
 <p><strong>Create a new column that converts the location groupings to a single number. Drop the location categorical column.</strong></p>
 <p><em>Location was mapped to numeric values based on U.S. Census regions (e.g., “Pacific” to 1, “East North Central” to 5). The original location column was dropped, simplifying the dataset for modeling.</em></p>
-<div id="c7f94b97" class="cell" data-execution_count="13">
+<div id="b43c1926" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Stretch Task 3: Convert location to numeric</span></span>
 <span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define mapping for location categories</span></span>
-<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>location_map <span class="op">=</span> {</span>
-<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;Pacific&#39;</span>: <span class="dv">1</span>, <span class="st">&#39;Mountain&#39;</span>: <span class="dv">2</span>, <span class="st">&#39;West South Central&#39;</span>: <span class="dv">3</span>, <span class="st">&#39;West North Central&#39;</span>: <span class="dv">4</span>,</span>
-<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;East North Central&#39;</span>: <span class="dv">5</span>, <span class="st">&#39;South Atlantic&#39;</span>: <span class="dv">6</span>, <span class="st">&#39;Middle Atlantic&#39;</span>: <span class="dv">7</span>, </span>
-<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;New England&#39;</span>: <span class="dv">8</span>, <span class="st">&#39;East South Central&#39;</span>: <span class="dv">9</span></span>
-<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>display(<span class="st">&quot;New Values: &#39;Pacific&#39;= 1, &#39;Mountain&#39;= 2, &#39;West South Central&#39;= 3, &#39;West North Central&#39;= 4, &#39;East North Central&#39;= 5&#39;South Atlantic&#39;= 6, &#39;Middle Atlantic&#39;= 7, &#39;New England&#39;= 8, &#39;East South Central&#39;=9 &quot;</span>)  </span>
-<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply mapping (ensure stripping whitespace and converting non-mapped values to NaN)</span></span>
-<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&#39;location_numeric&#39;</span>] <span class="op">=</span> df[<span class="st">&#39;location&#39;</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>.strip().<span class="bu">map</span>(location_map)</span>
-<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Check for any unmapped values if I see any errors, I&#39;ll use to debug</span></span>
-<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a><span class="co"># unmapped_locations = df[df[&#39;location_numeric&#39;].isna()][&#39;location&#39;].unique()</span></span>
-<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a><span class="co"># if len(unmapped_locations) &gt; 0:</span></span>
-<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a><span class="co">#     print(&quot;Warning: Unmapped location values found:&quot;, unmapped_locations)</span></span>
-<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill remaining NaNs with the median location value (safe default)</span></span>
-<span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&#39;location_numeric&#39;</span>].fillna(df[<span class="st">&#39;location_numeric&#39;</span>].median(), inplace<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb54-21"><a href="#cb54-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-22"><a href="#cb54-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop the original location column</span></span>
-<span id="cb54-23"><a href="#cb54-23" aria-hidden="true" tabindex="-1"></a>df.drop(columns<span class="op">=</span>[<span class="st">&#39;location&#39;</span>], inplace<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb54-24"><a href="#cb54-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-25"><a href="#cb54-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Display confirmation and sample data</span></span>
-<span id="cb54-26"><a href="#cb54-26" aria-hidden="true" tabindex="-1"></a>display(<span class="st">&quot;Location mapping applied successfully. Sample of updated dataset:&quot;</span>)</span>
-<span id="cb54-27"><a href="#cb54-27" aria-hidden="true" tabindex="-1"></a>display(df[[<span class="st">&#39;respondent_id&#39;</span>, <span class="st">&#39;age_numeric&#39;</span>, <span class="st">&#39;education_numeric&#39;</span>, <span class="st">&#39;income_numeric&#39;</span>, <span class="st">&#39;target&#39;</span>, <span class="st">&#39;location_numeric&#39;</span>]].head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>location_map <span class="op">=</span> {</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;Pacific&#39;</span>: <span class="dv">1</span>, <span class="st">&#39;Mountain&#39;</span>: <span class="dv">2</span>, <span class="st">&#39;West South Central&#39;</span>: <span class="dv">3</span>, <span class="st">&#39;West North Central&#39;</span>: <span class="dv">4</span>,</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;East North Central&#39;</span>: <span class="dv">5</span>, <span class="st">&#39;South Atlantic&#39;</span>: <span class="dv">6</span>, <span class="st">&#39;Middle Atlantic&#39;</span>: <span class="dv">7</span>, </span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;New England&#39;</span>: <span class="dv">8</span>, <span class="st">&#39;East South Central&#39;</span>: <span class="dv">9</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>display(<span class="st">&quot;New Values: &#39;Pacific&#39;= 1, &#39;Mountain&#39;= 2, &#39;West South Central&#39;= 3, &#39;West North Central&#39;= 4, &#39;East North Central&#39;= 5&#39;South Atlantic&#39;= 6, &#39;Middle Atlantic&#39;= 7, &#39;New England&#39;= 8, &#39;East South Central&#39;=9 &quot;</span>)  </span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply mapping (ensure stripping whitespace and converting non-mapped values to NaN)</span></span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&#39;location_numeric&#39;</span>] <span class="op">=</span> df[<span class="st">&#39;location&#39;</span>].astype(<span class="bu">str</span>).<span class="bu">str</span>.strip().<span class="bu">map</span>(location_map)</span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Check for any unmapped values if I see any errors, I&#39;ll use to debug</span></span>
+<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a><span class="co"># unmapped_locations = df[df[&#39;location_numeric&#39;].isna()][&#39;location&#39;].unique()</span></span>
+<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a><span class="co"># if len(unmapped_locations) &gt; 0:</span></span>
+<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a><span class="co">#     print(&quot;Warning: Unmapped location values found:&quot;, unmapped_locations)</span></span>
+<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill remaining NaNs with the median location value (safe default)</span></span>
+<span id="cb54-21"><a href="#cb54-21" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&#39;location_numeric&#39;</span>].fillna(df[<span class="st">&#39;location_numeric&#39;</span>].median(), inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb54-22"><a href="#cb54-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-23"><a href="#cb54-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop the original location column</span></span>
+<span id="cb54-24"><a href="#cb54-24" aria-hidden="true" tabindex="-1"></a>df.drop(columns<span class="op">=</span>[<span class="st">&#39;location&#39;</span>], inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb54-25"><a href="#cb54-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-26"><a href="#cb54-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Display confirmation and sample data</span></span>
+<span id="cb54-27"><a href="#cb54-27" aria-hidden="true" tabindex="-1"></a>display(<span class="st">&quot;Location mapping applied successfully. Sample of updated dataset:&quot;</span>)</span>
+<span id="cb54-28"><a href="#cb54-28" aria-hidden="true" tabindex="-1"></a>display(df[[<span class="st">&#39;respondent_id&#39;</span>, <span class="st">&#39;age_numeric&#39;</span>, <span class="st">&#39;education_numeric&#39;</span>, <span class="st">&#39;income_numeric&#39;</span>, <span class="st">&#39;target&#39;</span>, <span class="st">&#39;location_numeric&#39;</span>]].head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <pre><code>&quot;New Values: &#39;Pacific&#39;= 1, &#39;Mountain&#39;= 2, &#39;West South Central&#39;= 3, &#39;West North Central&#39;= 4, &#39;East North Central&#39;= 5&#39;South Atlantic&#39;= 6, &#39;Middle Atlantic&#39;= 7, &#39;New England&#39;= 8, &#39;East South Central&#39;=9 &quot;</code></pre>

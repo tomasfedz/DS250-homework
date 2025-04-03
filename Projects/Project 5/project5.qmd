@@ -601,6 +601,7 @@ _Location was mapped to numeric values based on U.S. Census regions (e.g., "Paci
 # Stretch Task 3: Convert location to numeric
 
 # Define mapping for location categories
+
 location_map = {
     'Pacific': 1, 'Mountain': 2, 'West South Central': 3, 'West North Central': 4,
     'East North Central': 5, 'South Atlantic': 6, 'Middle Atlantic': 7, 

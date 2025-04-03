@@ -1,7 +1,7 @@
 ---
 title: "Client Report - The War with Star Wars"
 subtitle: "Course DS 250"
-author: "[STUDENT NAME]"
+author: "Tomas Fernandez"
 format:
   html:
     self-contained: true
@@ -28,8 +28,13 @@ execute:
 ```{python}
 import pandas as pd 
 import numpy as np
+import matplotlib.pyplot as plt
 from lets_plot import *
-# add the additional libraries you need to import for ML here
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
 
 LetsPlot.setup_html(isolated_frame=True)
 ```
@@ -42,24 +47,87 @@ LetsPlot.setup_html(isolated_frame=True)
 
 # import your data here using pandas and the URL
 
-
+github_url = "https://raw.githubusercontent.com/fivethirtyeight/data/master/star-wars-survey/StarWars.csv"
+df = pd.read_csv(github_url, encoding='latin1', skiprows=1)
 ```
 
 ## Elevator pitch
 _A SHORT (2-3 SENTENCES) PARAGRAPH THAT `DESCRIBES KEY INSIGHTS` TAKEN FROM METRICS IN THE PROJECT RESULTS THINK TOP OR MOST IMPORTANT RESULTS._ (Note: this is not a summary of the project, but a summary of the results.)
 
-_A Client has requested this analysis and this is your one shot of what you would say to your boss in a 2 min elevator ride before he takes your report and hands it to the client._
+_My analysis reveals that Star Wars fans who have seen at least one film are more likely to earn above $50,000 if they are older (45+), have higher education (bachelor’s or above), and view key characters like Han Solo favorably. The machine learning model predicts income levels with around 68% accuracy, highlighting age and education as top predictors. I also find that Episode V is the most popular film among Star Wars fans being the most watched and highest rated, followed by Episode I._
 
 ## QUESTION|TASK 1
 
 __Shorten the column names and clean them up for easier use with pandas.__ Provide a table or list that exemplifies how you fixed the names. 
 
-_type your results and analysis here_
+_The original dataset’s column names were verbose and inconsistent, making them unwieldy for analysis. I shortened them, removed special characters, and standardized formatting for pandas compatibility. For example, "Have you seen any of the 6 films in the Star Wars franchise?" became seen_any_film, and character favorability columns like "Please state whether you view the following characters favorably..." were prefixed as favor_han_solo, etc._
 
 ```{python}
 # Include and execute your code here
+import pandas as pd
+from IPython.display import display
 
+# Load the dataset
+df = pd.read_csv("C:/Users/tomas/OneDrive/BYUIdaho/DS250-homework/StarWars.csv", encoding='latin1', skiprows=1)
 
+# Check raw column names
+display("Raw column names from CSV:", df.columns.tolist())
+
+# Define renaming dictionary based on your file's actual column names
+new_names = {
+    'Unnamed: 0': 'respondent_id',
+    'Response': 'seen_any_film',
+    'Response.1': 'sw_fan',
+    'Star Wars: Episode I  The Phantom Menace': 'seen_episode_1',
+    'Star Wars: Episode II  Attack of the Clones': 'seen_episode_2',
+    'Star Wars: Episode III  Revenge of the Sith': 'seen_episode_3',
+    'Star Wars: Episode IV  A New Hope': 'seen_episode_4',
+    'Star Wars: Episode V The Empire Strikes Back': 'seen_episode_5',
+    'Star Wars: Episode VI Return of the Jedi': 'seen_episode_6',
+    'Star Wars: Episode I  The Phantom Menace.1': 'rank_episode_1',
+    'Star Wars: Episode II  Attack of the Clones.1': 'rank_episode_2',
+    'Star Wars: Episode III  Revenge of the Sith.1': 'rank_episode_3',
+    'Star Wars: Episode IV  A New Hope.1': 'rank_episode_4',
+    'Star Wars: Episode V The Empire Strikes Back.1': 'rank_episode_5',
+    'Star Wars: Episode VI Return of the Jedi.1': 'rank_episode_6',
+    'Han Solo': 'favor_han_solo',
+    'Luke Skywalker': 'favor_luke_skywalker',
+    'Princess Leia Organa': 'favor_leia',
+    'Anakin Skywalker': 'favor_anakin',
+    'Obi Wan Kenobi': 'favor_obi_wan',
+    'Emperor Palpatine': 'favor_emperor',
+    'Darth Vader': 'favor_darth_vader',
+    'Lando Calrissian': 'favor_lando',
+    'Boba Fett': 'favor_boba_fett',
+    'C-3P0': 'favor_c3po',
+    'R2 D2': 'favor_r2d2',
+    'Jar Jar Binks': 'favor_jar_jar',
+    'Padme Amidala': 'favor_padme',
+    'Yoda': 'favor_yoda',
+    'Response.2': 'shot_first',
+    'Response.3': 'know_expanded',
+    'Response.4': 'fan_expanded',
+    'Response.5': 'trek_fan',
+    'Response.6': 'gender',
+    'Response.7': 'age',
+    'Response.8': 'income',
+    'Response.9': 'education',
+    'Response.10': 'location'
+}
+
+# Create a DataFrame to show old vs. new names
+name_mapping_df = pd.DataFrame(list(new_names.items()), columns=['Original Name', 'New Name'])
+display("Column name mapping (old vs. new):", name_mapping_df.head(10))
+
+# Apply renaming
+df = df.rename(columns=new_names)
+
+# Save a copy of the original DataFrame for Task 3 and Stretch Task 2
+df_original = df.copy()  
+
+# Display columns after renaming
+display("Columns after renaming:")
+display(df.head(10))
 ```
 
 
@@ -67,47 +135,163 @@ _type your results and analysis here_
 
 __Clean and format the data so that it can be used in a machine learning model.__ As you format the data, you should complete each item listed below. In your final report provide example(s) of the reformatted data with a short description of the changes made.  
     a. Filter the dataset to respondents that have seen at least one film  
-    a. Create a new column that converts the age ranges to a single number. Drop the age range categorical column  
-    a. Create a new column that converts the education groupings to a single number. Drop the school categorical column  
-    a. Create a new column that converts the income ranges to a single number. Drop the income range categorical column  
-    a. Create your target (also known as “y” or “label”) column based on the new income range column  
-    a. One-hot encode all remaining categorical columns   
+    b. Create a new column that converts the age ranges to a single number. Drop the age range categorical column  
+    c. Create a new column that converts the education groupings to a single number. Drop the school categorical column  
+    d. Create a new column that converts the income ranges to a single number. Drop the income range categorical column  
+    e. Create your target (also known as “y” or “label”) column based on the new income range column  
+    f. One-hot encode all remaining categorical columns   
 
-_type your results and analysis here_
+_The dataset was filtered to include only respondents who have seen at least one Star Wars film. Age, education, and income were converted from categorical ranges to numeric values (e.g., "18-29" to 23.5, "Bachelor degree" to 4, "$50,000 - $99,999" to 4), and original columns were dropped. A binary target column was created where 1 indicates income > $50k. Categorical columns like gender and shot_first were one-hot encoded for model compatibility._
+
+A. Filter the dataset to respondents that have seen at least one film: Completed
 
 ```{python}
 # Include and execute your code here
+from IPython.display import display
+
+# Define film columns
+film_columns = ['seen_episode_1', 'seen_episode_2', 'seen_episode_3', 
+                'seen_episode_4', 'seen_episode_5', 'seen_episode_6']
+
+# Start with renamed df
+display_table = df[['respondent_id'] + film_columns].copy()
+
+# a. Filter the dataset to respondents that have seen at least one film
+
+#display("Rows before filtering:", df.shape) ---for debugging only :)----
+df = df[df[film_columns].notna().any(axis=1)].copy()
+#display_table = display_table[display_table[film_columns].notna().any(axis=1)].copy()
+#display("Rows after filtering:", df.shape)
+#display("After filtering (sample):", display_table.head())
+display("-----------------------------------------------------------------")
 
 
 ```
 
+B. Create a new column that converts the age ranges to a single number
+
 ```{python}
-# Include and execute your code here
+
+# b. Create a new column that converts the age ranges to a single number
+
+# Mapping age ranges
+display("Unique values in 'age' before mapping:", df['age'].unique().tolist())
+age_map = {'18-29': 23.5, '30-44': 37, '45-60': 52.5, '> 60': 65}
+display("Mapped 'Age' values: 23.5 = '18-29', 37 = '30-44', 52.5 = '45-60', 65 = '> 60' (midpoints of ranges)")
+df['age_numeric'] = df['age'].str.strip().map(age_map)
+
+# using fillna to fill in missing values
+df['age_numeric'] = df['age_numeric'].fillna(df['age_numeric'].median())
+
+
+# displaying table of age_numeric
+display_table = df[['respondent_id', 'age_numeric']].copy()
+df.drop(columns=['age'], inplace=True)
+display("After age conversion (sample):", display_table.head())
+
+display("-----------------------------------------------------------------")
+
 
 
 ```
 
+C. Create a new column that converts the education groupings to a single number
 ```{python}
-# Include and execute your code here
+# c. Create a new column that converts the education groupings to a single number
+# education mapping
+display("Unique values in 'education' before mapping:", df['education'].unique().tolist())
+education_map = {
+    'Less than high school degree': 0, 'High school degree': 1,
+    'Some college or Associate degree': 2, 'Bachelor degree': 3,
+    'Graduate degree': 4
+}
+
+
+
+display("Education mapping: 0 = 'Less than high school degree', 1 = 'High school degree', 2 = 'Some college or Associate degree', 3 = 'Bachelor degree', 4 = 'Graduate degree'")
+df['education_numeric'] = df['education'].str.strip().map(education_map)
+
+#using fillna to fill in missing values
+df['education_numeric'] = df['education_numeric'].fillna(df['education_numeric'].median())
+
+display_table = df[['respondent_id', 'age_numeric', 'education_numeric']].copy()
+df.drop(columns=['education'], inplace=True)
+display("After education conversion (sample):", display_table.head())
+display("-----------------------------------------------------------------")
 
 
 ```
 
+D. Create a new column that converts the income ranges to a single number
 ```{python}
-# Include and execute your code here
+
+# d. Create a new column that converts the income ranges to a single number
+# income mapping
+display("Unique values in 'income' before mapping:", df['income'].unique().tolist())
+income_map = {
+    '$0 - $24,999': 1, '$25,000 - $49,999': 2, '$50,000 - $99,999': 3,
+    '$100,000 - $149,999': 4, '$150,000+': 5
+}
+display("Income mapping: 1 = '$0 - $24,999', 2 = '$25,000 - $49,999', 3 = '$50,000 - $99,999', 4 = '$100,000 - $149,999', 5 = '$150,000+'")
+df['income_numeric'] = df['income'].str.strip().map(income_map)
+
+#using fillna to fill in missing values
+df['income_numeric'] = df['income_numeric'].fillna(df['income_numeric'].median())
+
+# displaying table of income_numeric
+display_table = df[['respondent_id', 'age_numeric', 'education_numeric', 'income_numeric']].copy()
+df.drop(columns=['income'], inplace=True)
+display("After income conversion (sample):", display_table.head())
+display("-----------------------------------------------------------------")
+
 
 
 ```
 
+E. Create target column (income > $50k)
 ```{python}
 # Include and execute your code here
+# e. Create your target column
+
+df['target'] = df['income_numeric'].apply(lambda x: 1 if x > 2 else 0)
+display_table = df[['respondent_id', 'age_numeric', 'education_numeric', 'income_numeric', 'target']].copy()
+display("After target creation (sample):", display_table.head())
+display("-----------------------------------------------------------------")
 
 
 ```
 
+F. One-hot encode or convert categorical variables into a numerical format 
+
 ```{python}
 # Include and execute your code here
+# f. One-hot encode all remaining categorical columns
 
+categorical_cols = ['gender', 'shot_first', 'sw_fan', 'know_expanded', 'fan_expanded', 'trek_fan',
+                    'seen_episode_1', 'seen_episode_2', 'seen_episode_3', 
+                    'seen_episode_4', 'seen_episode_5', 'seen_episode_6',
+                    'favor_han_solo', 'favor_luke_skywalker', 'favor_leia', 
+                    'favor_anakin', 'favor_obi_wan', 'favor_emperor', 
+                    'favor_darth_vader', 'favor_lando', 'favor_boba_fett', 
+                    'favor_c3po', 'favor_r2d2', 'favor_jar_jar', 
+                    'favor_padme', 'favor_yoda']
+# Only encode columns that still exist in df
+categorical_cols = [col for col in categorical_cols if col in df.columns]
+display("Categorical columns to be one-hot encoded:", categorical_cols)
+df = pd.get_dummies(df, columns=categorical_cols, drop_first=True)
+display_table = df.copy()
+# Clean column names for consistency
+df.columns = df.columns.str.replace(' ', '_').str.lower()
+display_table.columns = display_table.columns.str.replace(' ', '_').str.lower()
+
+# Set display options to show all columns
+pd.set_option('display.max_columns', None)
+pd.set_option('display.width', None)
+
+# Final display
+display("After one-hot encoding, or converting categorical variables into a numerical format:", display_table.head())
+
+display("-----------------------------------------------------------------")
 
 ```
 
@@ -115,39 +299,190 @@ _type your results and analysis here_
 
 __Validate that the data provided on GitHub lines up with the article by recreating 2 of the visuals from the article.__  
 
-_type your results and analysis here_
+_The FiveThirtyEight article includes visuals like the percentage of respondents who have seen each film and the favorability of characters. I recreated these using bar charts, confirming that Episode V is the most seen (around 64%) and The Empire Strikes Back was voted 'best' chapter around 24.4%, aligning with the article's findings._
 
 ```{python}
+
 # Include and execute your code here
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+from IPython.display import display
+
+# Set a consistent style for all plots
+plt.style.use('seaborn-v0_8-whitegrid') 
+sns.set_context('notebook', font_scale=1.2)  # Adjust font scale for readability
+
+# Which Star Wars Movie Have You Seen?
+# Define film columns
+film_columns = ['seen_episode_1', 'seen_episode_2', 'seen_episode_3', 
+                'seen_episode_4', 'seen_episode_5', 'seen_episode_6']
+
+# Calculate percentage of respondents who have seen each film
+seen_counts = df_original[film_columns].notna().mean() * 100
+seen_df = pd.DataFrame({
+    'Episode': ['Ep I: The Phantom Menace', 'Ep II: Attack of the Clones', 'Ep III: Revenge of the Sith', 'Ep IV: A New Hope', 'Ep V: The Empire Strikes Back', 'Ep VI: Return of the Jedi'],
+    'Percentage Seen': seen_counts.values
+})
+
+# Create the plot
+fig, ax = plt.subplots(figsize=(8, 5))
+bars = ax.barh(seen_df['Episode'], seen_df['Percentage Seen'], 
+               color=sns.color_palette("Blues_d", 6), edgecolor='white')
+
+# Customize the plot
+ax.set_title('Which Star Wars Movie Have You Seen?', fontsize=16, pad=15, fontweight='bold')
+ax.set_xlabel('Percentage (%)', fontsize=12)
+ax.set_ylabel('Episode', fontsize=12)
+ax.set_xlim(0, 100)
+ax.grid(True, axis='x', linestyle='--', alpha=0.7)
+
+# Add percentage labels next to each bar
+for bar in bars:
+    width = bar.get_width()
+    ax.text(width + 1, bar.get_y() + bar.get_height() / 2, f'{width:.1f}%',
+            ha='left', va='center', fontsize=10, color='black')
+
+# Adjust layout
+plt.tight_layout()
+plt.show()
+#  What's the Best Star Wars Movie? 
+# Define ranking columns
+rank_columns = ['rank_episode_1', 'rank_episode_2', 'rank_episode_3', 
+                'rank_episode_4', 'rank_episode_5', 'rank_episode_6']
+
+# ranking columns although I'm not sure if they would fit on the report
+# display("Ranking columns:", rank_columns)
+# display("Sample data from rank_episode_1:", df_original['rank_episode_1'].head().tolist())
+# display("Unique values in rank_episode_1:", df_original['rank_episode_1'].unique().tolist())
+
+# Calculate the percentage of respondents who ranked each movie as the best (rank = 1)
+best_counts = []
+total_respondents = len(df_original)
+for col in rank_columns:
+    # Convert rankings to numeric, count how many times the movie was ranked 1
+    # Handle both string and numeric values
+    rank_series = pd.to_numeric(df_original[col], errors='coerce')
+    count_best = (rank_series == 1).sum()
+    percentage_best = (count_best / total_respondents) * 100
+    best_counts.append(percentage_best)
+
+# calculated percentages
+#display("Calculated percentages for 'best' ranking:", best_counts)
+
+# Create a DataFrame for the plot
+best_df = pd.DataFrame({
+    'Episode': ['Ep I: The Phantom Menace', 'Ep II: Attack of the Clones', 'Ep III: Revenge of the Sith', 'Ep IV: A New Hope', 'Ep V: The Empire Strikes Back', 'Ep VI: Return of the Jedi'],
+    'Percentage Best': best_counts
+})
+
+# Sort by percentage )
+best_df = best_df.sort_values('Percentage Best', ascending=True)
+
+# Set up the plot
+fig, ax = plt.subplots(figsize=(8, 5))
+
+# Plot horizontal bars
+bars = ax.barh(best_df['Episode'], best_df['Percentage Best'], 
+               color=sns.color_palette("Blues_d", 6), edgecolor='white')
+
+# Customize the plot making it more readable
+ax.set_title("What's the Best Star Wars Movie?", fontsize=16, pad=15, fontweight='bold')
+ax.set_xlabel('Percentage (%)', fontsize=12)
+ax.set_ylabel('Episode', fontsize=12)
+ax.set_xlim(0, max(best_df['Percentage Best']) + 10)  
+ax.grid(True, axis='x', linestyle='--', alpha=0.7)
+
+# Remove unnecessary spines
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.spines['left'].set_color('gray')
+ax.spines['bottom'].set_color('gray')
+
+# Add percentage labels to the right of each bar
+for bar in bars:
+    width = bar.get_width()
+    ax.text(width + 1, bar.get_y() + bar.get_height() / 2, f'{width:.1f}%',
+            ha='left', va='center', fontsize=10, color='black')
+
+# Adjust layout
+plt.tight_layout()
+plt.show()
 
 ```
 
-```{python}
-# Include and execute your code here
-
-```
-
-## QUESTION|TASK 4
-
-__Build a machine learning model that predicts whether a person makes more than $50k. Describe your model and report the accuracy.__ 
-
-_type your results and analysis here_
-
-```{python}
-# Include and execute your code here
-
-```
-
----
 
 ## STRETCH QUESTION|TASK 1
 
 __Build a machine learning model that predicts whether a person makes more than $50k. With accuracy of at least 65%. Describe your model and report the accuracy.__
 
-_type your results and analysis here_
+_I built a Random Forest Classifier to predict whether a respondent earns over $50k based on features like age, education, and character favorability. The model achieved an accuracy of approximately 68%, exceeding the 65% threshold, with age and education being the most important predictors._
 
 ```{python}
-# Include and execute your code here
+
+# Import necessary libraries
+import pandas as pd 
+import numpy as np 
+from sklearn.model_selection import train_test_split 
+from sklearn.ensemble import RandomForestClassifier 
+from sklearn.metrics import accuracy_score 
+from sklearn.impute import SimpleImputer 
+
+# Debug: Check DataFrame structure before processing 
+display("\nDataset Information:") 
+display(df.info()) 
+
+display("\nColumns with Missing Values:") 
+display(df.isna().sum()[df.isna().sum() > 0]) 
+
+# Prepare features and target 
+feature_cols = [col for col in df.columns if col not in ['respondent_id', 'income_numeric', 'target']] 
+X = df[feature_cols] 
+y = df['target'] 
+
+# Convert categorical variables to numeric (One-Hot Encoding) 
+categorical_cols = X.select_dtypes(include=['object']).columns.tolist() 
+
+if categorical_cols: 
+    display("\nEncoding categorical features:", categorical_cols) 
+    X = pd.get_dummies(X, columns=categorical_cols, drop_first=True) 
+
+# Verify that all features are now numeric 
+display("\nFeature Data Types After Encoding:") 
+display(X.dtypes.value_counts()) 
+
+# Handle missing values using median imputation 
+if X.isna().sum().sum() > 0: 
+    display("\nHandling missing values by imputing with median.") 
+    imputer = SimpleImputer(strategy='median') 
+    X = pd.DataFrame(imputer.fit_transform(X), columns=X.columns) 
+
+# Split data into training (80%) and testing (20%) sets 
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42) 
+
+# Initialize and train the Random Forest model 
+rf_model = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42, class_weight='balanced') 
+rf_model.fit(X_train, y_train) 
+
+# Predict on the test set and calculate accuracy 
+y_pred = rf_model.predict(X_test) 
+accuracy = accuracy_score(y_test, y_pred) 
+
+# Display results 
+display("\nModel Performance:") 
+display(f"Random Forest Accuracy: {accuracy * 100:.2f}%") 
+
+# Feature Importance Analysis 
+feature_importance = pd.DataFrame({ 
+    'Feature': X.columns, 
+    'Importance': rf_model.feature_importances_ 
+}).sort_values('Importance', ascending=False) 
+
+# Show top 5 important features 
+display("\nTop 5 Most Important Features:") 
+display(feature_importance.head())
+
 
 
 ```
@@ -157,11 +492,100 @@ _type your results and analysis here_
 
 __Validate the data provided on GitHub lines up with the article by recreating a 3rd visual from the article.__
 
-_type your results and analysis here_
+_The article shows how often each Star Wars film was rated in the top, middle, and bottom third by 471 respondents who have seen all six films. I recreated this as a horizontal grouped bar chart, confirming that "The Empire Strikes Back" is most often rated in the top third (64%), while "Attack of the Clones" is most often in the bottom third (57%), consistent with the article._
 
 ```{python}
-# Include and execute your code here
 
+# Include and execute your code here
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+from IPython.display import display
+
+# Filter respondents who have seen all six films
+film_columns = ['seen_episode_1', 'seen_episode_2', 'seen_episode_3', 
+                'seen_episode_4', 'seen_episode_5', 'seen_episode_6']
+df_seen_all = df_original[df_original[film_columns].notna().all(axis=1)].copy()
+
+# Debug: Check the number of respondents
+display("Number of respondents who have seen all six films:", len(df_seen_all))
+
+# Define ranking columns
+rank_columns = ['rank_episode_1', 'rank_episode_2', 'rank_episode_3', 
+                'rank_episode_4', 'rank_episode_5', 'rank_episode_6']
+
+# Convert rankings to numeric
+rank_data = df_seen_all[rank_columns].apply(pd.to_numeric, errors='coerce')
+
+# Calculate percentages for top third (ranks 1-2), middle third (ranks 3-4), and bottom third (ranks 5-6)
+total_respondents = len(df_seen_all)
+top_third = ((rank_data >= 1) & (rank_data <= 2)).sum() / total_respondents * 100
+middle_third = ((rank_data >= 3) & (rank_data <= 4)).sum() / total_respondents * 100
+bottom_third = ((rank_data >= 5) & (rank_data <= 6)).sum() / total_respondents * 100
+
+# Create a DataFrame for plotting
+movies = ['The Phantom Menace', 'Attack of the Clones', 'Revenge of the Sith', 
+          'A New Hope', 'The Empire Strikes Back', 'Return of the Jedi']
+rating_df = pd.DataFrame({
+    'Movie': movies,
+    'Top third': top_third.values,
+    'Middle third': middle_third.values,
+    'Bottom third': bottom_third.values
+})
+
+# Sort by 'Top third' percentage (descending)
+rating_df = rating_df.sort_values('Top third', ascending=False)
+
+# Set up the plot
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# Define bar width and positions
+bar_width = 0.25
+r1 = np.arange(len(rating_df))
+r2 = [x + bar_width for x in r1]
+r3 = [x + bar_width * 2 for x in r1]
+
+# Define colors (like the OG website)
+colors = {
+    'Top third': '#2ca02c',  # Green
+    'Middle third': '#1f77b4',  # Blue
+    'Bottom third': '#d62728'  # Red
+}
+
+# Plot bars
+bars1 = ax.bar(r1, rating_df['Top third'], color=colors['Top third'], width=bar_width, label='Top third')
+bars2 = ax.bar(r2, rating_df['Middle third'], color=colors['Middle third'], width=bar_width, label='Middle third')
+bars3 = ax.bar(r3, rating_df['Bottom third'], color=colors['Bottom third'], width=bar_width, label='Bottom third')
+
+# Add percentage labels inside the bars
+for bars in [bars1, bars2, bars3]:
+    for bar in bars:
+        height = bar.get_height()
+        if height >= 5:
+            ax.text(bar.get_x() + bar.get_width()/2, height - 3, f"{int(height)}%", 
+                    ha='center', va='center', color='white', fontsize=10, fontweight='bold')
+
+# Customize the plot
+ax.set_title("How People Rate Star Wars Movies", 
+             fontsize=14, fontweight='bold', loc='left', pad=20)
+
+ax.set_xticks([r + bar_width for r in range(len(rating_df))])
+ax.set_xticklabels(rating_df['Movie'], rotation=45, ha='right', fontsize=11)
+
+ax.set_ylabel('Percentage (%)', fontsize=12)
+ax.set_ylim(0, 100)
+ax.yaxis.grid(True, linestyle='--', alpha=0.7)  # Light grid for readability
+
+# Remove spines for a clean look
+for spine in ax.spines.values():
+    spine.set_visible(False)
+
+# Move legend outside the plot
+ax.legend(loc='upper left', bbox_to_anchor=(1, 1), title="Ranking Category", frameon=False, fontsize=10)
+
+# Adjust layout
+plt.tight_layout()
+plt.show()
 
 ```
 
@@ -170,12 +594,38 @@ _type your results and analysis here_
 
 __Create a new column that converts the location groupings to a single number. Drop the location categorical column.__  
 
-_type your results and analysis here_
+_Location was mapped to numeric values based on U.S. Census regions (e.g., "Pacific" to 1, "East North Central" to 5). The original location column was dropped, simplifying the dataset for modeling._
 
 ```{python}
-# Include and execute your code here
 
+# Stretch Task 3: Convert location to numeric
+
+# Define mapping for location categories
+
+location_map = {
+    'Pacific': 1, 'Mountain': 2, 'West South Central': 3, 'West North Central': 4,
+    'East North Central': 5, 'South Atlantic': 6, 'Middle Atlantic': 7, 
+    'New England': 8, 'East South Central': 9
+}
+display("New Values: 'Pacific'= 1, 'Mountain'= 2, 'West South Central'= 3, 'West North Central'= 4, 'East North Central'= 5'South Atlantic'= 6, 'Middle Atlantic'= 7, 'New England'= 8, 'East South Central'=9 ")  
+
+# Apply mapping (ensure stripping whitespace and converting non-mapped values to NaN)
+df['location_numeric'] = df['location'].astype(str).str.strip().map(location_map)
+
+# Check for any unmapped values if I see any errors, I'll use to debug
+# unmapped_locations = df[df['location_numeric'].isna()]['location'].unique()
+# if len(unmapped_locations) > 0:
+#     print("Warning: Unmapped location values found:", unmapped_locations)
+
+# Fill remaining NaNs with the median location value (safe default)
+df['location_numeric'].fillna(df['location_numeric'].median(), inplace=True)
+
+# Drop the original location column
+df.drop(columns=['location'], inplace=True)
+
+# Display confirmation and sample data
+display("Location mapping applied successfully. Sample of updated dataset:")
+display(df[['respondent_id', 'age_numeric', 'education_numeric', 'income_numeric', 'target', 'location_numeric']].head())
 
 ```
 
----

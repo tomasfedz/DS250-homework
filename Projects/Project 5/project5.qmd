@@ -1,4 +1,3 @@
-Please check my code:
 ---
 title: "Client Report - The War with Star Wars"
 subtitle: "Course DS 250"

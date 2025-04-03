@@ -1,0 +1,56 @@
+name: Render and Publish Quarto Document
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          tinytex: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas numpy matplotlib seaborn scikit-learn xgboost
+          pip install jupyter nbformat nbclient
+          pip install lets-plot  # Install the missing lets_plot module
+
+      # List files to debug
+      - name: List directory structure
+        run: find . -type f -name "*.qmd" | sort
+
+      # Render specific QMD file
+      - name: Render Quarto Document
+        run: |
+          # Find the QMD file
+          QMD_FILE=$(find . -type f -name "*.qmd" | head -n 1)
+          if [ -z "$QMD_FILE" ]; then
+            echo "No QMD file found"
+            exit 1
+          fi
+          echo "Rendering $QMD_FILE"
+          quarto render "$QMD_FILE" --to html
+
+      # Deploy the rendered HTML to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: "."  # This should be the folder where the HTML output is generated
+          branch: main  # Deploy to the 'main' branch
